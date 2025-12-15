@@ -1,10 +1,10 @@
-package com.smartmeter.dao;
+package com.smartmeter.service;
 
 import com.smartmeter.model.Admin;
 import com.smartmeter.model.User;
 import java.util.List;
 
-public interface AdminDAO {
+public interface AdminService {
 
     Admin login(String username, String password);
 
@@ -13,4 +13,6 @@ public interface AdminDAO {
     boolean deleteUser(int userId);
 
     List<User> getAllUsers();
+
+    double calculateBill(double kwh);
 }

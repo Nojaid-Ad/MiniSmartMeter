@@ -26,7 +26,7 @@ public class DBConnection {
 
     //Singleton Pattern
     public static DBConnection getInstance() {
-        if (instance == null) {
+        if (instance == null || instance.connection == null) {
             instance = new DBConnection();
         }
         return instance;
