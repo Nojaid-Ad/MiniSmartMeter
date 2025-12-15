@@ -10,9 +10,10 @@ public interface AdminService {
 
     boolean addAdmin(String username, String password);
 
+    double calculateBill(double kwh, int type);
+
     boolean deleteUser(int userId);
 
     List<User> getAllUsers();
 
-    double calculateBill(double kwh);
 }

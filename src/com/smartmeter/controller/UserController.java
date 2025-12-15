@@ -66,22 +66,67 @@ public class UserController {
             switch (c) {
                 case 1 ->
                     view.showMessage("Balance: " + user.getBalance());
+
                 case 2 -> {
                     double amt = view.readDouble("Amount: ");
                     if (userService.rechargeBalance(user.getId(), amt)) {
+                        view.showMessage("Balance recharged");
                         user = userService.login(user.getUsername(), user.getPassword());
+                    } else {
+                        view.showMessage("Recharge failed");
                     }
                 }
-                case 3 -> {
-                    double amt = view.readDouble("Bill amount: ");
-                    if (userService.payBill(user.getId(), amt, "Visa")) {
-                        user = userService.login(user.getUsername(), user.getPassword());
-                    }
-                }
+
+                case 3 ->
+                    user = payBill(user);
+
                 case 0 -> {
                     return;
                 }
+
+                default ->
+                    view.showMessage("Invalid choice");
             }
+        }
+    }
+
+    private User payBill(User user) {
+
+        double amt = view.readDouble("Bill amount: ");
+
+        view.showPaymentMethods();
+        int methodChoice = view.readInt();
+
+        String paymentMethod = switch (methodChoice) {
+            case 1 ->
+                "Visa";
+            case 2 ->
+                "PayPal";
+            case 3 ->
+                "LibiPay";
+            case 4 ->
+                "MobiCash";
+            default ->
+                null;
+        };
+
+        if (paymentMethod == null) {
+            view.showMessage("Invalid payment method");
+            return user;
+        }
+
+        boolean success = userService.payBill(
+                user.getId(),
+                amt,
+                paymentMethod
+        );
+
+        if (success) {
+            view.showMessage("Bill paid using " + paymentMethod);
+            return userService.login(user.getUsername(), user.getPassword());
+        } else {
+            view.showMessage("Payment failed");
+            return user;
         }
     }
 }

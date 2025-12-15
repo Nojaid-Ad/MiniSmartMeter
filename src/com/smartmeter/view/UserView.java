@@ -7,25 +7,39 @@ public class UserView {
     private final Scanner scanner = new Scanner(System.in);
 
     public void showAuthMenu() {
-        System.out.println("\n--- User ---");
-        System.out.println("1. Register");
-        System.out.println("2. Login");
-        System.out.println("0. Back");
+        System.out.println("""
+                === Smart Meter System ===
+                1. Register
+                2. Login
+                0. Exit
+                """);
         System.out.print("Choose: ");
     }
 
     public void showUserMenu() {
-        System.out.println("\n--- User Menu ---");
-        System.out.println("1. Check Balance");
-        System.out.println("2. Recharge Balance");
-        System.out.println("3. Pay Bill");
-        System.out.println("0. Logout");
+        System.out.println("""
+                --- User Menu ---
+                1. Check Balance
+                2. Recharge Balance
+                3. Pay Bill
+                0. Logout
+                """);
         System.out.print("Choose: ");
     }
 
-    public String readString(String label) {
-        System.out.print(label);
-        return scanner.nextLine();
+    public void showPaymentMethods() {
+        System.out.println("""
+                Choose payment method:
+                1. Visa
+                2. PayPal
+                3. LibiPay
+                4. MobiCash
+                """);
+        System.out.print("Choice: ");
+    }
+
+    public void showMessage(String msg) {
+        System.out.println(msg);
     }
 
     public int readInt() {
@@ -39,8 +53,8 @@ public class UserView {
         }
     }
 
-    public double readDouble(String label) {
-        System.out.print(label);
+    public double readDouble(String msg) {
+        System.out.print(msg);
         while (true) {
             String input = scanner.nextLine();
             try {
@@ -51,7 +65,8 @@ public class UserView {
         }
     }
 
-    public void showMessage(String msg) {
-        System.out.println(msg);
+    public String readString(String msg) {
+        System.out.print(msg);
+        return scanner.nextLine().trim();
     }
 }

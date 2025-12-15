@@ -61,8 +61,14 @@ public class AdminController {
                     viewUsers();
                 case 2 ->
                     deleteUser();
-                case 3 ->
-                    calculateBill();
+                case 3 -> {
+                    double kwh = view.readDouble("kWh: ");
+                    view.showMessage("1. Normal\n2. Peak\n3. Weekend");
+                    int type = view.readInt();
+
+                    double cost = adminService.calculateBill(kwh, type);
+                    view.showMessage(kwh + " kWh -> " + cost + " LYD");
+                }
                 case 4 ->
                     addAdmin();
                 case 0 -> {
@@ -95,12 +101,6 @@ public class AdminController {
         int userId = view.readInt();
         boolean success = adminService.deleteUser(userId);
         view.showMessage(success ? "User deleted." : "Delete failed.");
-    }
-
-    private void calculateBill() {
-        double kwh = view.readDouble("kWh: ");
-        double cost = adminService.calculateBill(kwh);
-        view.showMessage(kwh + " kWh -> " + cost + " Dinar");
     }
 
     private void addAdmin() {
