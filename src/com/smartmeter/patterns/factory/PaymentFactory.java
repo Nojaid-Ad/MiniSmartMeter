@@ -2,7 +2,7 @@ package com.smartmeter.patterns.factory;
 
 public class PaymentFactory {
 
-    public static PaymentMethod create(String type) {
+    public static PaymentMethod createPaymentMethod(String type) {
 
         switch (type.toLowerCase()) {
             case "visa":

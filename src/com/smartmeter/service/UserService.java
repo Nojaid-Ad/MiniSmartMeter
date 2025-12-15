@@ -11,7 +11,7 @@ public interface UserService {
 
     boolean rechargeBalance(int userId, double amount);
 
-    boolean payBill(int userId, double amount);
+    boolean payBill(int userId, double amount, String paymentMethod);
 
     List<User> getAllUsers();
 }

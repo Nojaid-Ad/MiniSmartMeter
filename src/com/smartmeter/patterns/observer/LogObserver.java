@@ -7,20 +7,27 @@ import java.sql.PreparedStatement;
 public class LogObserver implements Observer {
 
     @Override
-    public void update(String message) {
+    public void update(String message, Integer userId) {
 
-        String sql = "INSERT INTO logs (message) VALUES (?)";
+        String sql = """
+            INSERT INTO logs (user_id, event_type, level, message)
+            VALUES (?, ?, ?, ?)
+        """;
 
         try {
             Connection c = DBConnection.getInstance().getConnection();
             PreparedStatement stmt = c.prepareStatement(sql);
-            stmt.setString(1, message);
-            stmt.executeUpdate();
 
+            stmt.setObject(1, userId);
+            stmt.setString(2, "USER");
+            stmt.setString(3, "INFO");
+            stmt.setString(4, message);
+
+            stmt.executeUpdate();
             System.out.println("[LOG SAVED] " + message);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("[LOG FAILED] " + e.getMessage());
         }
     }
 }

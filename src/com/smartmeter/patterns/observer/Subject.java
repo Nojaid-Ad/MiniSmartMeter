@@ -4,5 +4,5 @@ public interface Subject {
 
     void attach(Observer observer);
 
-    void notifyObservers(String message);
+    void notifyObservers(String message, Integer userId);
 }
