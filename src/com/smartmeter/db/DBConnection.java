@@ -10,8 +10,8 @@ public class DBConnection {
     private Connection connection;
 
     private final String URL = "jdbc:mysql://localhost:3306/smart_meter";
-    private final String USER = "root";      
-    private final String PASSWORD = "";        
+    private final String USER = "root";
+    private final String PASSWORD = "";
 
     private DBConnection() {
         try {
@@ -23,9 +23,8 @@ public class DBConnection {
             System.out.println("Database connection failed!");
         }
     }
-    
+
     //Singleton Pattern
-    
     public static DBConnection getInstance() {
         if (instance == null) {
             instance = new DBConnection();
