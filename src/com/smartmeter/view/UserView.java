@@ -22,6 +22,7 @@ public class UserView {
                 1. Check Balance
                 2. Recharge Balance
                 3. Pay Bill
+                4. Enter Meter Reading
                 0. Logout
                 """);
         System.out.print("Choose: ");

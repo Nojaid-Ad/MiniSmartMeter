@@ -7,4 +7,6 @@ public interface MeterReadingDAO {
     boolean addReading(int userId, double reading);
 
     MeterReading getLastReading(int userId);
+
+    boolean hasUnbilledConsumption(int userId);
 }

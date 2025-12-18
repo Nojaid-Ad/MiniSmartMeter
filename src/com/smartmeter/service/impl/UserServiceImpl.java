@@ -1,169 +1,167 @@
 package com.smartmeter.service.impl;
 
-import com.smartmeter.dao.BillDAO;
-import com.smartmeter.dao.PaymentDAO;
-import com.smartmeter.dao.UserDAO;
-import com.smartmeter.dao.impl.BillDAOImpl;
-import com.smartmeter.dao.impl.PaymentDAOImpl;
-import com.smartmeter.dao.impl.UserDAOImpl;
-import com.smartmeter.db.DBConnection;
+import com.smartmeter.dao.*;
+import com.smartmeter.dao.impl.*;
 import com.smartmeter.model.User;
 import com.smartmeter.patterns.factory.PaymentFactory;
 import com.smartmeter.patterns.factory.PaymentMethod;
-import com.smartmeter.patterns.observer.LogObserver;
-import com.smartmeter.patterns.observer.LogSubject;
+import com.smartmeter.patterns.template.*;
 import com.smartmeter.service.UserService;
 
 import java.sql.Connection;
-import java.util.List;
+import com.smartmeter.db.DBConnection;
+import com.smartmeter.model.MeterReading;
 
 public class UserServiceImpl implements UserService {
 
-    private final UserDAO userDAO;
-    private final PaymentDAO paymentDAO;
-    private final BillDAO billDAO;
-    private final LogSubject logSubject;
-
-    public UserServiceImpl() {
-        this.userDAO = new UserDAOImpl();
-        this.paymentDAO = new PaymentDAOImpl();
-        this.billDAO = new BillDAOImpl();
-        this.logSubject = new LogSubject();
-        this.logSubject.attach(new LogObserver());
-    }
+    private final UserDAO userDAO = new UserDAOImpl();
+    private final BillDAO billDAO = new BillDAOImpl();
+    private final PaymentDAO paymentDAO = new PaymentDAOImpl();
+    private final MeterReadingDAO meterDAO = new MeterReadingDAOImpl();
 
     @Override
     public boolean registerUser(String username, String password) {
-
-        if (userDAO.getUserByUsername(username) != null) {
-            return false;
-        }
-
-        User user = new User(0, username, password, 0.0, null);
-        boolean created = userDAO.addUser(user);
-
-        if (!created) {
-            return false;
-        }
-
-        User savedUser = userDAO.getUserByUsername(username);
-        if (savedUser != null) {
-            logSubject.notifyObservers(
-                    "New user registered: " + username,
-                    savedUser.getId()
-            );
-        }
-
-        return true;
+        return userDAO.addUser(new User(0, username, password, 0.0, null));
     }
 
     @Override
     public User login(String username, String password) {
-
-        User user = userDAO.getUserByUsername(username);
-
-        if (user != null && user.getPassword().equals(password)) {
-            logSubject.notifyObservers("User logged in", user.getId());
-            return user;
-        }
-
-        return null;
+        User u = userDAO.getUserByUsername(username);
+        return (u != null && u.getPassword().equals(password)) ? u : null;
     }
 
     @Override
     public boolean rechargeBalance(int userId, double amount) {
-
         if (amount <= 0) {
             return false;
         }
-
-        User user = userDAO.getUserById(userId);
-        if (user == null) {
-            return false;
-        }
-
-        boolean updated = userDAO.updateBalance(
-                userId,
-                user.getBalance() + amount
-        );
-
-        if (updated) {
-            logSubject.notifyObservers(
-                    "User recharged balance: +" + amount,
-                    userId
-            );
-        }
-
-        return updated;
+        User u = userDAO.getUserById(userId);
+        return userDAO.updateBalance(userId, u.getBalance() + amount);
     }
 
     @Override
-    public boolean payBill(int userId, double amount, String paymentMethodName) {
+    public boolean submitMeterReading(int userId, double reading) {
+        if (reading < 0) {
+            return false;
+        }
+        return meterDAO.addReading(userId, reading);
+    }
 
-        Connection c = DBConnection.getInstance().getConnection();
+    @Override
+    public double calculateConsumption(int userId, double newReading) {
+
+        MeterReading last = meterDAO.getLastReading(userId);
+
+        if (last == null) {
+            return newReading;
+        }
+
+        if (newReading < last.getReading()) {
+            return -1;
+        }
+
+        return newReading - last.getReading();
+    }
+
+    @Override
+    public boolean hasUnpaidConsumption(int userId) {
+        return meterDAO.hasUnbilledConsumption(userId);
+    }
+
+    @Override
+    public int generateBill(int userId, int billingType) {
+        AbstractBillGenerator generator = switch (billingType) {
+            case 1 ->
+                new NormalBillGenerator();
+            case 2 ->
+                new PeakBillGenerator();
+            case 3 ->
+                new WeekendBillGenerator();
+            default ->
+                throw new IllegalArgumentException("Invalid billing type");
+        };
+        return generator.generateBill(userId);
+    }
+
+    @Override
+    public double getBillAmount(int billId) {
+        return billDAO.getBillAmount(billId);
+    }
+
+    @Override
+    public boolean payBill(int userId, int billId, String paymentMethod) {
 
         try {
+            Connection c = DBConnection.getInstance().getConnection();
             c.setAutoCommit(false);
 
             User user = userDAO.getUserById(userId);
-            if (user == null || user.getBalance() < amount) {
+            double amount = billDAO.getBillAmount(billId);
+
+            if (user.getBalance() < amount) {
                 return false;
             }
 
-            PaymentMethod method
-                    = PaymentFactory.createPaymentMethod(paymentMethodName);
-
-            if (method == null || !method.pay(amount)) {
+            PaymentMethod method = PaymentFactory.createPaymentMethod(paymentMethod);
+            if (!method.pay(amount)) {
                 return false;
             }
 
-            int billId = billDAO.createBill(userId, 0, amount);
-            if (billId == -1) {
-                c.rollback();
-                return false;
-            }
-
-            if (!userDAO.updateBalance(userId, user.getBalance() - amount)) {
-                c.rollback();
-                return false;
-            }
-
-            if (!billDAO.markAsPaid(billId)) {
-                c.rollback();
-                return false;
-            }
-
-            if (!paymentDAO.savePayment(
-                    userId, billId, amount, paymentMethodName)) {
-                c.rollback();
-                return false;
-            }
+            userDAO.updateBalance(userId, user.getBalance() - amount);
+            billDAO.markAsPaid(billId);
+            paymentDAO.savePayment(userId, billId, amount, paymentMethod);
 
             c.commit();
-
-            logSubject.notifyObservers(
-                    "User paid bill #" + billId + " using " + paymentMethodName,
-                    userId
-            );
-
             return true;
 
         } catch (Exception e) {
-            try {
-                c.rollback();
-            } catch (Exception ignored) {
-            }
             return false;
-        } finally {
-            try {
-                c.setAutoCommit(true);
-            } catch (Exception ignored) {
-            }
         }
     }
 
     @Override
-    public List<User> getAllUsers() {
-        return userDAO.getAllUsers();
+    public boolean payGeneratedBill(int userId, int billId, String paymentMethod) {
+        try {
+            Connection c = DBConnection.getInstance().getConnection();
+            try {
+
+                c.setAutoCommit(false);
+
+                User user = userDAO.getUserById(userId);
+                double amount = billDAO.getBillAmount(billId);
+
+                if (user.getBalance() < amount) {
+                    return false;
+                }
+
+                PaymentMethod method = PaymentFactory.createPaymentMethod(paymentMethod);
+                if (!method.pay(amount)) {
+                    return false;
+                }
+
+                userDAO.updateBalance(userId, user.getBalance() - amount);
+                billDAO.markAsPaid(billId);
+                paymentDAO.savePayment(userId, billId, amount, paymentMethod);
+
+                c.commit();
+                return true;
+
+            } catch (Exception e) {
+                try {
+                    c.rollback();
+                } catch (Exception ignored) {
+                }
+                return false;
+            } finally {
+                try {
+                    c.setAutoCommit(true);
+                } catch (Exception ignored) {
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+            return false;
+        }
+
     }
 }

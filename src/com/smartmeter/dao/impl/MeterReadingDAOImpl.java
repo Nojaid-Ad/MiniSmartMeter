@@ -14,51 +14,55 @@ public class MeterReadingDAOImpl implements MeterReadingDAO {
     public boolean addReading(int userId, double reading) {
 
         String sql = """
-            INSERT INTO meter_readings (user_id, reading)
-            VALUES (?, ?)
+            INSERT INTO meter_readings (user_id, reading, billed)
+            VALUES (?, ?, false)
         """;
 
         try {
             Connection c = DBConnection.getInstance().getConnection();
-            try (PreparedStatement stmt = c.prepareStatement(sql)) {
-                stmt.setInt(1, userId);
-                stmt.setDouble(2, reading);
-                return stmt.executeUpdate() > 0;
-            }
+            PreparedStatement ps = c.prepareStatement(sql);
+            ps.setInt(1, userId);
+            ps.setDouble(2, reading);
+            return ps.executeUpdate() > 0;
         } catch (Exception e) {
-            return false;
+            e.printStackTrace();
         }
+        return false;
     }
 
     @Override
     public MeterReading getLastReading(int userId) {
 
         String sql = """
-            SELECT * FROM meter_readings
-            WHERE user_id = ?
-            ORDER BY reading_date DESC
-            LIMIT 1
-        """;
+        SELECT * FROM meter_readings
+        WHERE user_id = ?
+        ORDER BY created_at DESC
+        LIMIT 1
+    """;
 
         try {
             Connection c = DBConnection.getInstance().getConnection();
-            try (PreparedStatement stmt = c.prepareStatement(sql)) {
+            PreparedStatement ps = c.prepareStatement(sql);
+            ps.setInt(1, userId);
 
-                stmt.setInt(1, userId);
-                ResultSet rs = stmt.executeQuery();
-
-                if (rs.next()) {
-                    return new MeterReading(
-                            rs.getInt("id"),
-                            rs.getInt("user_id"),
-                            rs.getDouble("reading"),
-                            rs.getTimestamp("reading_date").toLocalDateTime()
-                    );
-                }
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return new MeterReading(
+                        rs.getInt("id"),
+                        rs.getInt("user_id"),
+                        rs.getDouble("reading"),
+                        rs.getTimestamp("created_at").toLocalDateTime()
+                );
             }
         } catch (Exception e) {
-            return null;
+            e.printStackTrace();
         }
+
         return null;
+    }
+
+    @Override
+    public boolean hasUnbilledConsumption(int userId) {
+        return false;
     }
 }

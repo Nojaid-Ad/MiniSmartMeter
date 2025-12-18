@@ -33,23 +33,43 @@ CREATE TABLE IF NOT EXISTS meter_readings (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     reading DOUBLE NOT NULL,
-    reading_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-) ENGINE=InnoDB;
+    billed BOOLEAN DEFAULT false,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE
+);
 
 CREATE INDEX idx_meter_user ON meter_readings(user_id);
-CREATE INDEX idx_meter_date ON meter_readings(reading_date);
+CREATE INDEX idx_meter_date ON meter_readings(created_at);
 
 -- Bills Table
 CREATE TABLE IF NOT EXISTS bills (
     id INT AUTO_INCREMENT PRIMARY KEY,
+
     user_id INT NOT NULL,
+    meter_reading_id INT NOT NULL,
+
     consumption DOUBLE NOT NULL,
     amount DOUBLE NOT NULL,
-    status ENUM('paid','unpaid') DEFAULT 'unpaid',
+
+    status ENUM('paid', 'unpaid') DEFAULT 'unpaid',
+
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP,
+
+    -- Relations
+    CONSTRAINT fk_bill_user
+        FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_bill_meter_reading
+        FOREIGN KEY (meter_reading_id)
+        REFERENCES meter_readings(id)
+        ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE INDEX idx_bills_user ON bills(user_id);

@@ -11,8 +11,6 @@ public interface UserDAO {
 
     User getUserById(int id);
 
-    List<User> getAllUsers();
-
     boolean updateBalance(int userId, double newBalance);
 
     boolean deleteUser(int userId);

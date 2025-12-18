@@ -1,7 +1,6 @@
 package com.smartmeter.service;
 
 import com.smartmeter.model.User;
-import java.util.List;
 
 public interface UserService {
 
@@ -11,7 +10,18 @@ public interface UserService {
 
     boolean rechargeBalance(int userId, double amount);
 
-    boolean payBill(int userId, double amount, String paymentMethod);
+    int generateBill(int userId, int billingType);
 
-    List<User> getAllUsers();
+    boolean payBill(int userId, int billId, String paymentMethod);
+
+    boolean submitMeterReading(int userId, double reading);
+
+    double calculateConsumption(int userId, double reading);
+
+    boolean hasUnpaidConsumption(int userId);
+
+    double getBillAmount(int billId);
+
+    boolean payGeneratedBill(int userId, int billId, String paymentMethod);
+
 }

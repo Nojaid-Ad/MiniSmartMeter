@@ -2,18 +2,16 @@ package com.smartmeter.controller;
 
 import com.smartmeter.model.User;
 import com.smartmeter.service.UserService;
+import com.smartmeter.service.BillingService;
 import com.smartmeter.service.impl.UserServiceImpl;
+import com.smartmeter.service.impl.BillingServiceImpl;
 import com.smartmeter.view.UserView;
 
 public class UserController {
 
-    private final UserService userService;
-    private final UserView view;
-
-    public UserController() {
-        this.userService = new UserServiceImpl();
-        this.view = new UserView();
-    }
+    private final UserService userService = new UserServiceImpl();
+    private final BillingService billingService = new BillingServiceImpl();
+    private final UserView view = new UserView();
 
     public void start() {
         while (true) {
@@ -70,15 +68,26 @@ public class UserController {
                 case 2 -> {
                     double amt = view.readDouble("Amount: ");
                     if (userService.rechargeBalance(user.getId(), amt)) {
-                        view.showMessage("Balance recharged");
                         user = userService.login(user.getUsername(), user.getPassword());
-                    } else {
-                        view.showMessage("Recharge failed");
+                        view.showMessage("Balance recharged");
                     }
                 }
 
                 case 3 ->
                     user = payBill(user);
+
+                case 4 -> {
+                    double reading = view.readDouble("Enter meter reading (kWh): ");
+                    double consumption = userService.calculateConsumption(user.getId(), reading);
+                    if (consumption < 0) {
+                        view.showMessage("Error: New reading cannot be less than previous reading");
+                        break;
+                    }
+                    if (userService.submitMeterReading(user.getId(), reading)) {
+                        view.showMessage("Reading saved successfully");
+                        view.showMessage("Consumption: " + consumption + " kWh");
+                    }
+                }
 
                 case 0 -> {
                     return;
@@ -91,8 +100,14 @@ public class UserController {
     }
 
     private User payBill(User user) {
+        view.showMessage("""
+            Billing type:
+            1. Normal
+            2. Peak
+            3. Weekend
+        """);
 
-        double amt = view.readDouble("Bill amount: ");
+        int type = view.readInt();
 
         view.showPaymentMethods();
         int methodChoice = view.readInt();
@@ -115,18 +130,18 @@ public class UserController {
             return user;
         }
 
-        boolean success = userService.payBill(
+        boolean success = billingService.payBill(
                 user.getId(),
-                amt,
+                type,
                 paymentMethod
         );
 
         if (success) {
-            view.showMessage("Bill paid using " + paymentMethod);
+            view.showMessage("Payment completed successfully");
             return userService.login(user.getUsername(), user.getPassword());
-        } else {
-            view.showMessage("Payment failed");
-            return user;
         }
+
+        view.showMessage("Payment failed");
+        return user;
     }
 }
