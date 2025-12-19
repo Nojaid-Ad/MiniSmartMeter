@@ -4,7 +4,6 @@ import com.smartmeter.model.Bill;
 import com.smartmeter.model.User;
 
 import java.io.FileWriter;
-import java.io.IOException;
 
 public class BillTextGenerator {
 
@@ -25,7 +24,7 @@ public class BillTextGenerator {
             System.out.println("TXT bill created: " + fileName);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("File not generated");
         }
     }
 }

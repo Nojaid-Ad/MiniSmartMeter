@@ -5,8 +5,6 @@ import com.smartmeter.db.DBConnection;
 import com.smartmeter.model.User;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class UserDAOImpl implements UserDAO {
 

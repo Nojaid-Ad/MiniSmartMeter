@@ -10,7 +10,6 @@ public class User {
     private double balance;
     private Timestamp createdAt;
 
-    //Constructor
     public User(String username, String password, double balance) {
         this.username = username;
         this.password = password;
@@ -25,7 +24,6 @@ public class User {
         this.createdAt = createdAt;
     }
 
-    //Getters & Setters
     public int getId() {
         return id;
     }
