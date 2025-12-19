@@ -1,4 +1,5 @@
 package com.smartmeter.model;
+
 public class Bill {
 
     private int id;
@@ -6,6 +7,7 @@ public class Bill {
     private double consumption;
     private double amount;
     private String status;
+    private int meterReadingId;
 
     public Bill(int id, int userId, double consumption, double amount, String status) {
         this.id = id;
@@ -19,6 +21,10 @@ public class Bill {
         return "PAID".equals(status);
     }
 
+    public void setMeterReadingId(int meterReadingId) {
+        this.meterReadingId = meterReadingId;
+    }
+
     public String getStatus() {
         return status;
     }
@@ -29,6 +35,10 @@ public class Bill {
 
     public int getUserId() {
         return userId;
+    }
+
+    public int getMeterReadingId() {
+        return meterReadingId;
     }
 
     public double getConsumption() {

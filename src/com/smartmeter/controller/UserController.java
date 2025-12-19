@@ -161,7 +161,7 @@ public class UserController {
                 case 5 -> {
                     double amt = view.readDouble("Amount: ");
                     if (userService.rechargeBalance(user.getId(), amt)) {
-                        user = userService.login(user.getUsername(), user.getPassword());
+                        user = userService.getUserById(user.getId());
                         view.showMessage("Balance recharged");
                     } else {
                         view.showMessage("Invalid amount");

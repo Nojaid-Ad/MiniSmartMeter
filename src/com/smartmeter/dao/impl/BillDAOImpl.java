@@ -11,22 +11,11 @@ public class BillDAOImpl implements BillDAO {
     @Override
     public Bill getBillById(int billId) {
         String sql = "SELECT * FROM bills WHERE id = ?";
-        try {
-            Connection c = DBConnection.getInstance().getConnection();
-            PreparedStatement ps = c.prepareStatement(sql);
-            ps.setInt(1, billId);
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                return new Bill(
-                        rs.getInt("id"),
-                        rs.getInt("user_id"),
-                        rs.getDouble("consumption"),
-                        rs.getDouble("amount"),
-                        rs.getString("status")
-                );
-            }
-        } catch (Exception ignored) {
+        try{
+            
+        }
+          catch (Exception e) {
+            e.printStackTrace();
         }
         return null;
     }
@@ -57,7 +46,7 @@ public class BillDAOImpl implements BillDAO {
 
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
         return -1;
     }
@@ -126,7 +115,7 @@ public class BillDAOImpl implements BillDAO {
 
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            System.out.println(e);
         }
         return null;
     }

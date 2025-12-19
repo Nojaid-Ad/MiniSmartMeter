@@ -12,7 +12,6 @@ import com.smartmeter.model.Bill;
 import com.smartmeter.model.MeterReading;
 import com.smartmeter.model.User;
 import com.smartmeter.patterns.factory.PaymentFactory;
-import com.smartmeter.patterns.observer.LogObserver;
 import com.smartmeter.patterns.observer.LogSubject;
 import com.smartmeter.patterns.strategy.BillingContext;
 import com.smartmeter.patterns.strategy.NormalBillingStrategy;
@@ -27,12 +26,8 @@ public class BillingServiceImpl implements BillingService {
     private final MeterReadingDAO meterReadingDAO = new MeterReadingDAOImpl();
     private final UserDAO userDAO = new UserDAOImpl();
     private final PaymentDAO paymentDAO = new PaymentDAOImpl();
-    private final LogSubject logSubject = new LogSubject();
     private final BillingContext billingContext = new BillingContext();
-
-    public BillingServiceImpl() {
-        logSubject.attach(new LogObserver());
-    }
+    private final LogSubject logSubject = LogSubject.getInstance();
 
     @Override
     public int generateBill(int userId, int billingType) {
@@ -93,14 +88,11 @@ public class BillingServiceImpl implements BillingService {
 
         User user = userDAO.getUserById(userId);
         if (user == null) {
-            System.out.println("User not found");
             return false;
         }
 
         double amount = bill.getAmount();
-
         if (user.getBalance() < amount) {
-            System.out.println("Insufficient balance");
             return false;
         }
 
@@ -109,24 +101,31 @@ public class BillingServiceImpl implements BillingService {
                 .pay(amount);
 
         if (!paid) {
-            System.out.println("Payment failed");
             return false;
         }
 
-        userDAO.updateBalance(userId, user.getBalance() - amount);
-        paymentDAO.savePayment(userId, billId, amount, paymentMethod);
-        billDAO.markAsPaid(billId);
-        billDAO.markAsPaid(billId);
+        try {
+            userDAO.updateBalance(userId, user.getBalance() - amount);
+            paymentDAO.savePayment(userId, billId, amount, paymentMethod);
+            billDAO.markAsPaid(billId);
+            meterReadingDAO.markAsBilled(bill.getMeterReadingId());
+            logSubject.notifyObservers(
+                    "Bill paid. Amount = " + amount + ", Method = " + paymentMethod,
+                    userId
+            );
+            Bill paidBill = billDAO.getBillById(billId);
+            User paidUser = userDAO.getUserById(userId);
 
-        int meterReadingId = bill.getMeterReadingId();
-        meterReadingDAO.markAsBilled(meterReadingId);
+            if (paidBill != null && paidUser != null) {
+                BillTextGenerator.generate(paidBill, paidUser);
+            }
 
-        Bill paidBill = billDAO.getBillById(billId);
-        User paidUser = userDAO.getUserById(userId);
-        BillTextGenerator.generate(paidBill, paidUser);
-        Bill paidBill = billDAO.getBillById(billId);
-        User paidUser = userDAO.getUserById(userId);
-        BillTextGenerator.generate(paidBill, paidUser);
-        return true;
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
+
 }

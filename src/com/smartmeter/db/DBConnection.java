@@ -23,7 +23,7 @@ public class DBConnection {
     }
 
     //Singleton Pattern
-    public static DBConnection getInstance() {
+    public static synchronized  DBConnection getInstance() {
         if (instance == null) {
             instance = new DBConnection();
         }

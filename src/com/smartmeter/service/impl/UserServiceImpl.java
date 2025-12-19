@@ -8,7 +8,6 @@ import com.smartmeter.model.Report;
 import com.smartmeter.model.User;
 import com.smartmeter.patterns.factory.PaymentFactory;
 import com.smartmeter.patterns.factory.PaymentMethod;
-import com.smartmeter.patterns.observer.LogObserver;
 import com.smartmeter.patterns.observer.LogSubject;
 import com.smartmeter.patterns.template.*;
 import com.smartmeter.service.UserService;
@@ -20,12 +19,8 @@ public class UserServiceImpl implements UserService {
     private final BillDAO billDAO = new BillDAOImpl();
     private final PaymentDAO paymentDAO = new PaymentDAOImpl();
     private final MeterReadingDAO meterDAO = new MeterReadingDAOImpl();
-    private final LogSubject logSubject = new LogSubject();
+    private final LogSubject logSubject = LogSubject.getInstance();
     private final ReportDAO reportDAO = new ReportDAOImpl();
-
-    public UserServiceImpl() {
-        logSubject.attach(new LogObserver());
-    }
 
     @Override
     public User getUserById(int userId) {
@@ -51,12 +46,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public User login(String username, String password) {
         User u = userDAO.getUserByUsername(username);
-
         if (u != null && u.getPassword().equals(password)) {
-            logSubject.notifyObservers(
-                    "User logged in",
-                    u.getId()
-            );
+            logSubject.notifyObservers("User logged in", u.getId());
             return u;
         }
         return null;
@@ -64,28 +55,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean rechargeBalance(int userId, double amount) {
-
-        if (amount <= 0) {
-            return false;
-        }
-
         User u = userDAO.getUserById(userId);
-        if (u == null) {
+        if (u == null || amount <= 0) {
             return false;
         }
 
-        boolean ok = userDAO.updateBalance(
-                userId,
-                u.getBalance() + amount
-        );
-
+        boolean ok = userDAO.updateBalance(userId, u.getBalance() + amount);
         if (ok) {
-            logSubject.notifyObservers(
-                    "Balance recharged: +" + amount,
-                    userId
-            );
+            logSubject.notifyObservers("Balance recharged: +" + amount, userId);
         }
-
         return ok;
     }
 

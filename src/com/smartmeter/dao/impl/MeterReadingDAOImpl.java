@@ -108,7 +108,6 @@ public class MeterReadingDAOImpl implements MeterReadingDAO {
                             rs.getTimestamp("created_at").toLocalDateTime()
                     );
                 }
-
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -118,14 +117,15 @@ public class MeterReadingDAOImpl implements MeterReadingDAO {
     }
 
     @Override
-    public boolean markAsBilled(int meterReadingId) {
+    public boolean markAsBilled(int readingId) {
         String sql = "UPDATE meter_readings SET billed = true WHERE id = ?";
         try {
             Connection c = DBConnection.getInstance().getConnection();
             try (PreparedStatement ps = c.prepareStatement(sql)) {
 
-                ps.setInt(1, meterReadingId);
+                ps.setInt(1, readingId);
                 return ps.executeUpdate() > 0;
+
             }
         } catch (Exception e) {
             e.printStackTrace();

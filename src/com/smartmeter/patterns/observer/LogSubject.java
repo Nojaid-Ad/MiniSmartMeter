@@ -3,17 +3,25 @@ package com.smartmeter.patterns.observer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LogSubject implements Subject {
+public class LogSubject {
 
+    private static final LogSubject INSTANCE = new LogSubject();
     private final List<Observer> observers = new ArrayList<>();
 
-    @Override
+    private LogSubject() {
+    }
+
+    public static LogSubject getInstance() {
+        return INSTANCE;
+    }
+
     public void attach(Observer observer) {
         observers.add(observer);
     }
 
-    @Override
     public void notifyObservers(String message, Integer userId) {
-        observers.forEach(o -> o.update(message, userId));
+        for (Observer o : observers) {
+            o.update(message, userId);
+        }
     }
 }
