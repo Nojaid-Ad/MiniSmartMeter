@@ -5,21 +5,16 @@ import com.smartmeter.model.Bill;
 import com.smartmeter.model.User;
 import com.smartmeter.service.UserService;
 import com.smartmeter.service.BillingService;
-import com.smartmeter.service.ReportService;
 import com.smartmeter.service.impl.UserServiceImpl;
 import com.smartmeter.service.impl.BillingServiceImpl;
-import com.smartmeter.service.impl.ReportServiceImpl;
 import com.smartmeter.view.UserView;
 import com.smartmeter.view.BillView;
-import com.smartmeter.view.ReportView;
 
 public class UserController {
 
     private final UserService userService = new UserServiceImpl();
     private final BillingService billingService = new BillingServiceImpl();
     private final BillingFacade billingFacade = new BillingFacade();
-    private final ReportService reportService = new ReportServiceImpl();
-    private final ReportView reportView = new ReportView();
     private final UserView view = new UserView();
     private final BillView billView = new BillView();
 
@@ -74,7 +69,7 @@ public class UserController {
             switch (c) {
 
                 case 1 ->
-                    view.showMessage("Balance: " + user.getBalance());
+                    view.showMessage("Balance: " + user.getBalance() + "LYD");
 
                 case 2 -> {
                     if (billingFacade.getCurrentBill(user.getId()) != null) {

@@ -19,7 +19,7 @@ import com.smartmeter.patterns.strategy.NormalBillingStrategy;
 import com.smartmeter.patterns.strategy.PeakBillingStrategy;
 import com.smartmeter.patterns.strategy.WeekendBillingStrategy;
 import com.smartmeter.service.BillingService;
-import com.smartmeter.util.BillPdfGenerator;
+import com.smartmeter.util.BillTextGenerator;
 
 public class BillingServiceImpl implements BillingService {
 
@@ -118,8 +118,7 @@ public class BillingServiceImpl implements BillingService {
         billDAO.markAsPaid(billId);
         Bill paidBill = billDAO.getBillById(billId);
         User paidUser = userDAO.getUserById(userId);
-
-        BillPdfGenerator.generate(paidBill, paidUser);
+        BillTextGenerator.generate(paidBill, paidUser);
         return true;
     }
 }

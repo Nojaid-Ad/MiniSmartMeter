@@ -3,7 +3,6 @@ package com.smartmeter.service.impl;
 import com.smartmeter.dao.*;
 import com.smartmeter.dao.impl.*;
 import com.smartmeter.db.DBConnection;
-import com.smartmeter.model.Bill;
 import com.smartmeter.model.MeterReading;
 import com.smartmeter.model.Report;
 import com.smartmeter.model.User;
@@ -13,7 +12,6 @@ import com.smartmeter.patterns.observer.LogObserver;
 import com.smartmeter.patterns.observer.LogSubject;
 import com.smartmeter.patterns.template.*;
 import com.smartmeter.service.UserService;
-import com.smartmeter.util.BillPdfGenerator;
 import java.sql.Connection;
 
 public class UserServiceImpl implements UserService {
@@ -190,12 +188,6 @@ public class UserServiceImpl implements UserService {
             userDAO.updateBalance(userId, user.getBalance() - amount);
             billDAO.markAsPaid(billId);
             paymentDAO.savePayment(userId, billId, amount, paymentMethod);
-
-            Bill bill = billDAO.getBillById(billId);
-            User userAfterPay = userDAO.getUserById(userId);
-
-            BillPdfGenerator.generate(bill, userAfterPay);
-
             logSubject.notifyObservers(
                     "Bill paid. Amount = " + amount + ", Method = " + paymentMethod,
                     userId
