@@ -116,6 +116,14 @@ public class BillingServiceImpl implements BillingService {
         userDAO.updateBalance(userId, user.getBalance() - amount);
         paymentDAO.savePayment(userId, billId, amount, paymentMethod);
         billDAO.markAsPaid(billId);
+        billDAO.markAsPaid(billId);
+
+        int meterReadingId = bill.getMeterReadingId();
+        meterReadingDAO.markAsBilled(meterReadingId);
+
+        Bill paidBill = billDAO.getBillById(billId);
+        User paidUser = userDAO.getUserById(userId);
+        BillTextGenerator.generate(paidBill, paidUser);
         Bill paidBill = billDAO.getBillById(billId);
         User paidUser = userDAO.getUserById(userId);
         BillTextGenerator.generate(paidBill, paidUser);

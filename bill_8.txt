@@ -1,0 +1,7 @@
+===== Smart Meter Bill =====
+User       : ayoub
+Bill ID    : 8
+Consumption: 10.0 kWh
+Amount     : 1.0 LYD
+Status     : PAID
+============================

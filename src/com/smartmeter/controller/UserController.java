@@ -69,7 +69,7 @@ public class UserController {
             switch (c) {
 
                 case 1 ->
-                    view.showMessage("Balance: " + user.getBalance() + "LYD");
+                    view.showMessage("Balance: " + user.getBalance() + " LYD");
 
                 case 2 -> {
                     if (billingFacade.getCurrentBill(user.getId()) != null) {

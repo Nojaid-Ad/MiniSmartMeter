@@ -63,6 +63,25 @@ public class MeterReadingDAOImpl implements MeterReadingDAO {
 
     @Override
     public boolean hasUnbilledConsumption(int userId) {
+        String sql = """
+        SELECT COUNT(*) 
+        FROM meter_readings 
+        WHERE user_id = ? AND billed = false
+    """;
+        try {
+            Connection c = DBConnection.getInstance().getConnection();
+            try (PreparedStatement ps = c.prepareStatement(sql)) {
+
+                ps.setInt(1, userId);
+                ResultSet rs = ps.executeQuery();
+
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return false;
     }
 
@@ -96,6 +115,22 @@ public class MeterReadingDAOImpl implements MeterReadingDAO {
         }
 
         return null;
+    }
+
+    @Override
+    public boolean markAsBilled(int meterReadingId) {
+        String sql = "UPDATE meter_readings SET billed = true WHERE id = ?";
+        try {
+            Connection c = DBConnection.getInstance().getConnection();
+            try (PreparedStatement ps = c.prepareStatement(sql)) {
+
+                ps.setInt(1, meterReadingId);
+                return ps.executeUpdate() > 0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
 }

@@ -11,4 +11,7 @@ public interface MeterReadingDAO {
     MeterReading getPreviousReading(int userId);
 
     boolean hasUnbilledConsumption(int userId);
+
+    boolean markAsBilled(int meterReadingId);
+
 }
