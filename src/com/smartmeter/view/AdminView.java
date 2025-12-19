@@ -1,5 +1,6 @@
 package com.smartmeter.view;
 
+import com.smartmeter.model.Report;
 import com.smartmeter.model.User;
 import java.util.List;
 import java.util.Scanner;
@@ -18,9 +19,10 @@ public class AdminView {
     public void showAdminMenu() {
         System.out.println("\n--- Admin Menu ---");
         System.out.println("1. View Users");
-        System.out.println("2. Delete User");
-        System.out.println("3. Calculate Bill (kWh)");
-        System.out.println("4. Add Admin");
+        System.out.println("2. Show All Reports");
+        System.out.println("3. Delete User");
+        System.out.println("4. Calculate Bill (kWh)");
+        System.out.println("5. Add Admin");
         System.out.println("0. Logout");
         System.out.print("Choose: ");
     }
@@ -47,6 +49,28 @@ public class AdminView {
             ));
         }
 
+    }
+
+    public void showReports(List<Report> reports) {
+        if (reports.isEmpty()) {
+            System.out.println("No reports found.");
+            return;
+        }
+
+        System.out.println(String.format(
+                "%-20s | %-30s | %-20s",
+                "Title", "Message", "Date"
+        ));
+        System.out.println("--------------------------------------------------------------------");
+
+        for (Report r : reports) {
+            System.out.println(String.format(
+                    "%-20s | %-30s | %-20s",
+                    r.getTitle(),
+                    r.getMessage(),
+                    r.getCreatedAt()
+            ));
+        }
     }
 
     public int readInt() {

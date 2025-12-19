@@ -17,7 +17,7 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public List<Report> getMyReports(int userId) {
-        return reportDAO.getUserReports(userId);
+    public List<Report> getAllReports() {
+        return reportDAO.getAllReports();
     }
 }

@@ -28,14 +28,15 @@ public class ReportDAOImpl implements ReportDAO {
     }
 
     @Override
-    public List<Report> getUserReports(int userId) {
+    public List<Report> getAllReports() {
+
         List<Report> list = new ArrayList<>();
-        String sql = "SELECT * FROM reports WHERE user_id = ? ORDER BY created_at DESC";
+
+        String sql = "SELECT * FROM reports ORDER BY created_at DESC";
 
         try {
             Connection c = DBConnection.getInstance().getConnection();
             PreparedStatement ps = c.prepareStatement(sql);
-            ps.setInt(1, userId);
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -47,9 +48,11 @@ public class ReportDAOImpl implements ReportDAO {
                         rs.getTimestamp("created_at").toLocalDateTime()
                 ));
             }
-        } catch (Exception ignored) {
-            System.out.println("Something went wrong!");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
         return list;
     }
+
 }

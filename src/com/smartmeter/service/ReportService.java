@@ -7,5 +7,5 @@ public interface ReportService {
 
     boolean submitReport(int userId, String title, String message);
 
-    List<Report> getMyReports(int userId);
+    List<Report> getAllReports();
 }

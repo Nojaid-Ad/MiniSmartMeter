@@ -1,20 +1,22 @@
 package com.smartmeter.controller;
 
 import com.smartmeter.model.Admin;
-import com.smartmeter.model.User;
 import com.smartmeter.service.AdminService;
-import com.smartmeter.service.impl.AdminServiceImpl;
-import com.smartmeter.view.AdminView;
+import com.smartmeter.service.ReportService;
 
-import java.util.List;
+import com.smartmeter.service.impl.AdminServiceImpl;
+import com.smartmeter.service.impl.ReportServiceImpl;
+import com.smartmeter.view.AdminView;
 
 public class AdminController {
 
     private final AdminService adminService;
+    private ReportService reportService;
     private final AdminView view;
 
     public AdminController() {
         this.adminService = new AdminServiceImpl();
+        this.reportService = new ReportServiceImpl();
         this.view = new AdminView();
     }
 
@@ -60,8 +62,10 @@ public class AdminController {
                 case 1 ->
                     view.viewUsers(adminService.getAllUsers());
                 case 2 ->
+                    view.showReports(reportService.getAllReports());
+                case 3 ->
                     deleteUser();
-                case 3 -> {
+                case 4 -> {
                     double kwh = view.readDouble("kWh: ");
                     view.showMessage("1. Normal\n2. Peak\n3. Weekend");
                     int type = view.readInt();
@@ -69,7 +73,7 @@ public class AdminController {
                     double cost = adminService.calculateBill(kwh, type);
                     view.showMessage(kwh + " kWh -> " + cost + " LYD");
                 }
-                case 4 ->
+                case 5 ->
                     addAdmin();
                 case 0 -> {
                     view.showMessage("Logged out.");

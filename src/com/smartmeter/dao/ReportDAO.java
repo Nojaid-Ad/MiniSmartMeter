@@ -7,5 +7,5 @@ public interface ReportDAO {
 
     boolean addReport(Report report);
 
-    List<Report> getUserReports(int userId);
+    List<Report> getAllReports();
 }

@@ -19,6 +19,7 @@ import com.smartmeter.patterns.strategy.NormalBillingStrategy;
 import com.smartmeter.patterns.strategy.PeakBillingStrategy;
 import com.smartmeter.patterns.strategy.WeekendBillingStrategy;
 import com.smartmeter.service.BillingService;
+import com.smartmeter.util.BillPdfGenerator;
 
 public class BillingServiceImpl implements BillingService {
 
@@ -115,7 +116,10 @@ public class BillingServiceImpl implements BillingService {
         userDAO.updateBalance(userId, user.getBalance() - amount);
         paymentDAO.savePayment(userId, billId, amount, paymentMethod);
         billDAO.markAsPaid(billId);
+        Bill paidBill = billDAO.getBillById(billId);
+        User paidUser = userDAO.getUserById(userId);
 
+        BillPdfGenerator.generate(paidBill, paidUser);
         return true;
     }
 }
