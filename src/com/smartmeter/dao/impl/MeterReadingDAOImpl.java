@@ -65,4 +65,37 @@ public class MeterReadingDAOImpl implements MeterReadingDAO {
     public boolean hasUnbilledConsumption(int userId) {
         return false;
     }
+
+    @Override
+    public MeterReading getPreviousReading(int userId) {
+
+        String sql = """
+        SELECT * FROM meter_readings
+        WHERE user_id = ?
+        ORDER BY id DESC
+        LIMIT 1 OFFSET 1
+    """;
+        try {
+            Connection c = DBConnection.getInstance().getConnection();
+            try (PreparedStatement ps = c.prepareStatement(sql)) {
+
+                ps.setInt(1, userId);
+                ResultSet rs = ps.executeQuery();
+                if (rs.next()) {
+                    return new MeterReading(
+                            rs.getInt("id"),
+                            rs.getInt("user_id"),
+                            rs.getDouble("reading"),
+                            rs.getTimestamp("created_at").toLocalDateTime()
+                    );
+                }
+
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return null;
+    }
+
 }

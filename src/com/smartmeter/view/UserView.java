@@ -20,9 +20,11 @@ public class UserView {
         System.out.println("""
                 --- User Menu ---
                 1. Check Balance
-                2. Recharge Balance
-                3. Pay Bill
-                4. Enter Meter Reading
+                2. Enter Meter Reading 
+                3. Show Current Bill
+                4. Pay Bill
+                5. Recharge Balance
+                6. Report
                 0. Logout
                 """);
         System.out.print("Choose: ");

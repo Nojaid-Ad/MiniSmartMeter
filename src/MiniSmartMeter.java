@@ -14,13 +14,16 @@ public class MiniSmartMeter {
             int c = view.readChoice();
 
             switch (c) {
-                case 1 ->
+                case 1:
                     new UserController().start();
-                case 2 ->
+                case 2:
                     new AdminController().start();
-                case 0 -> {
+
+                case 0:
                     return;
-                }
+
+                default:
+                    System.out.println("Invalid choice");
             }
         }
     }

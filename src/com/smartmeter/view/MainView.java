@@ -8,10 +8,12 @@ public class MainView {
     private final Scanner scanner = new Scanner(System.in);
 
     public void showMainMenu() {
-        System.out.println("\n=== Smart Meter System ===");
-        System.out.println("1. User");
-        System.out.println("2. Admin");
-        System.out.println("0. Exit");
+        System.out.print("""
+                === Smart Meter System ===
+                1. User
+                2. Admin
+                0. Exit
+                """);
         System.out.print("Choose: ");
     }
 

@@ -1,5 +1,7 @@
 package com.smartmeter.dao;
 
+import com.smartmeter.model.Bill;
+
 public interface BillDAO {
 
     int createBill(int userId, int meterReadingId, double consumption, double amount);
@@ -7,4 +9,6 @@ public interface BillDAO {
     boolean markAsPaid(int billId);
 
     double getBillAmount(int billId);
+
+    Bill getUnpaidBillByUser(int userId);
 }

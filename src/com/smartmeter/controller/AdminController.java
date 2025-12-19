@@ -58,7 +58,7 @@ public class AdminController {
 
             switch (choice) {
                 case 1 ->
-                    viewUsers();
+                    view.viewUsers(adminService.getAllUsers());
                 case 2 ->
                     deleteUser();
                 case 3 -> {
@@ -78,22 +78,6 @@ public class AdminController {
                 default ->
                     view.showMessage("Invalid choice.");
             }
-        }
-    }
-
-    private void viewUsers() {
-        List<User> users = adminService.getAllUsers();
-
-        if (users.isEmpty()) {
-            view.showMessage("No users found.");
-            return;
-        }
-
-        view.showMessage("ID | Username | Balance");
-        for (User u : users) {
-            view.showMessage(
-                    u.getId() + " | " + u.getUsername() + " | " + u.getBalance()
-            );
         }
     }
 

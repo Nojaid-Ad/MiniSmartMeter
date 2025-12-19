@@ -24,4 +24,8 @@ public interface UserService {
 
     boolean payGeneratedBill(int userId, int billId, String paymentMethod);
 
+    User getUserById(int userId);
+
+    boolean submitReport(int userId, String title, String message);
+
 }

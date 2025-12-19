@@ -17,16 +17,14 @@ public class DBConnection {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection(URL, USER, PASSWORD);
-            System.out.println("Database connected successfully.");
         } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
             System.out.println("Database connection failed!");
         }
     }
 
     //Singleton Pattern
     public static DBConnection getInstance() {
-        if (instance == null || instance.connection == null) {
+        if (instance == null) {
             instance = new DBConnection();
         }
         return instance;

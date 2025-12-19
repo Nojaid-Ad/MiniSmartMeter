@@ -8,5 +8,7 @@ public interface MeterReadingDAO {
 
     MeterReading getLastReading(int userId);
 
+    MeterReading getPreviousReading(int userId);
+
     boolean hasUnbilledConsumption(int userId);
 }

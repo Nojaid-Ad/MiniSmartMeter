@@ -2,13 +2,18 @@ package com.smartmeter.service.impl;
 
 import com.smartmeter.dao.BillDAO;
 import com.smartmeter.dao.MeterReadingDAO;
+import com.smartmeter.dao.PaymentDAO;
 import com.smartmeter.dao.UserDAO;
 import com.smartmeter.dao.impl.BillDAOImpl;
 import com.smartmeter.dao.impl.MeterReadingDAOImpl;
+import com.smartmeter.dao.impl.PaymentDAOImpl;
 import com.smartmeter.dao.impl.UserDAOImpl;
+import com.smartmeter.model.Bill;
 import com.smartmeter.model.MeterReading;
 import com.smartmeter.model.User;
 import com.smartmeter.patterns.factory.PaymentFactory;
+import com.smartmeter.patterns.observer.LogObserver;
+import com.smartmeter.patterns.observer.LogSubject;
 import com.smartmeter.patterns.strategy.BillingContext;
 import com.smartmeter.patterns.strategy.NormalBillingStrategy;
 import com.smartmeter.patterns.strategy.PeakBillingStrategy;
@@ -20,16 +25,37 @@ public class BillingServiceImpl implements BillingService {
     private final BillDAO billDAO = new BillDAOImpl();
     private final MeterReadingDAO meterReadingDAO = new MeterReadingDAOImpl();
     private final UserDAO userDAO = new UserDAOImpl();
-
+    private final PaymentDAO paymentDAO = new PaymentDAOImpl();
+    private final LogSubject logSubject = new LogSubject();
     private final BillingContext billingContext = new BillingContext();
 
-    @Override
-    public boolean payBill(int userId, int billingType, String paymentMethod) {
+    public BillingServiceImpl() {
+        logSubject.attach(new LogObserver());
+    }
 
-        MeterReading reading = meterReadingDAO.getLastReading(userId);
-        if (reading == null) {
+    @Override
+    public int generateBill(int userId, int billingType) {
+
+        Bill unpaid = billDAO.getUnpaidBillByUser(userId);
+        if (unpaid != null) {
+            System.out.println("There is already an unpaid bill");
+            return -1;
+        }
+
+        MeterReading last = meterReadingDAO.getLastReading(userId);
+        MeterReading prev = meterReadingDAO.getPreviousReading(userId);
+
+        if (last == null) {
             System.out.println("No meter reading found");
-            return false;
+            return -1;
+        }
+
+        double prevValue = (prev == null) ? 0 : prev.getReading();
+        double consumption = last.getReading() - prevValue;
+
+        if (consumption <= 0) {
+            System.out.println("No consumption to bill");
+            return -1;
         }
 
         switch (billingType) {
@@ -41,18 +67,36 @@ public class BillingServiceImpl implements BillingService {
                 billingContext.setStrategy(new WeekendBillingStrategy());
             default -> {
                 System.out.println("Invalid billing type");
-                return false;
+                return -1;
             }
         }
 
-        double consumption = reading.getReading();
         double amount = billingContext.calculate(consumption);
+
+        return billDAO.createBill(
+                userId,
+                last.getId(),
+                consumption,
+                amount
+        );
+    }
+
+    @Override
+    public boolean payExistingBill(int userId, int billId, String paymentMethod) {
+
+        Bill bill = billDAO.getUnpaidBillByUser(userId);
+        if (bill == null || bill.getId() != billId) {
+            System.out.println("No unpaid bill to pay");
+            return false;
+        }
 
         User user = userDAO.getUserById(userId);
         if (user == null) {
             System.out.println("User not found");
             return false;
         }
+
+        double amount = bill.getAmount();
 
         if (user.getBalance() < amount) {
             System.out.println("Insufficient balance");
@@ -68,23 +112,9 @@ public class BillingServiceImpl implements BillingService {
             return false;
         }
 
-        int billId = billDAO.createBill(
-                userId,
-                reading.getId(),
-                consumption,
-                amount
-        );
-
-        if (billId == -1) {
-            System.out.println("Failed to create bill");
-            return false;
-        }
-
         userDAO.updateBalance(userId, user.getBalance() - amount);
+        paymentDAO.savePayment(userId, billId, amount, paymentMethod);
         billDAO.markAsPaid(billId);
-
-        System.out.println("Bill paid successfully");
-        System.out.println("Amount: " + amount);
 
         return true;
     }

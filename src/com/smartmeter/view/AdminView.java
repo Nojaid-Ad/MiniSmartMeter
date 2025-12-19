@@ -1,5 +1,7 @@
 package com.smartmeter.view;
 
+import com.smartmeter.model.User;
+import java.util.List;
 import java.util.Scanner;
 
 public class AdminView {
@@ -21,6 +23,30 @@ public class AdminView {
         System.out.println("4. Add Admin");
         System.out.println("0. Logout");
         System.out.print("Choose: ");
+    }
+
+    public void viewUsers(List<User> users) {
+
+        if (users.isEmpty()) {
+            showMessage("No users found.");
+            return;
+        }
+
+        showMessage(String.format(
+                "%-5s | %-15s | %-10s",
+                "ID", "Username", "Balance"
+        ));
+        showMessage("-------------------------------------");
+
+        for (User u : users) {
+            showMessage(String.format(
+                    "%-5d | %-15s | %-10.2f",
+                    u.getId(),
+                    u.getUsername(),
+                    u.getBalance()
+            ));
+        }
+
     }
 
     public int readInt() {
