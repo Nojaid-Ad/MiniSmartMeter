@@ -1,4 +1,11 @@
-# Mini Meter Reading and Billing System
+<h1 align="center">Mini Meter Reading and Billing System</h1>
+
+<p align="center">
+  <img 
+    src="https://readme-typing-svg.herokuapp.com?size=36&duration=3000&color=1A81E2&center=true&vCenter=true&width=800&lines=Developed+By;Nojaid+Abdullah+Issa+Aummara;Ayoub+Ahfeeth+Aboulqasim+Abu+Isnaynah"
+    alt="Developed By"
+  />
+</p>
 
 ## DESCRIPTION
 This project is a Java Console application developed as part of the **Software Design Patterns** course.  
@@ -196,10 +203,6 @@ MiniSmartMeter/
 
 ---
 
-## 🔵 DEVELOPED BY
-
-**🔹 <span style="color:#1f6feb">Nojaid Abdullah Issa Aummara</span>**  
-**🔹 <span style="color:#1f6feb">Ayoub Ahfeeth Aboulqasim Abu Isnaynah</span>**
 **Course:** Software Design Patterns (ITSE424)  
 **Faculty:** Faculty of Information Technology – Sabratha University  
 **Semester:** Fall 2025  
