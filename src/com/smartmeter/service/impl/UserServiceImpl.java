@@ -211,7 +211,6 @@ public class UserServiceImpl implements UserService {
                     userId
             );
         }
-
         return ok;
     }
 

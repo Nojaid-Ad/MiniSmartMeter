@@ -113,12 +113,7 @@ public class BillingServiceImpl implements BillingService {
                     "Bill paid. Amount = " + amount + ", Method = " + paymentMethod,
                     userId
             );
-            Bill paidBill = billDAO.getBillById(billId);
-            User paidUser = userDAO.getUserById(userId);
-
-            if (paidBill != null && paidUser != null) {
-                BillTextGenerator.generate(paidBill, paidUser);
-            }
+            BillTextGenerator.generate(bill, user);
 
             return true;
 

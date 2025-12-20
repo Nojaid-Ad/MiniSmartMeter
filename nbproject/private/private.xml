@@ -3,7 +3,16 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/D:/MiniSmartMeter/src/com/smartmeter/service/impl/UserServiceImpl.java</file>
+            <file>file:/D:/MiniSmartMeter/src/com/smartmeter/patterns/observer/LogSubject.java</file>
+            <file>file:/D:/MiniSmartMeter/src/com/smartmeter/service/impl/ReportServiceImpl.java</file>
             <file>file:/D:/MiniSmartMeter/src/MiniSmartMeter.java</file>
+            <file>file:/D:/MiniSmartMeter/src/com/smartmeter/service/impl/BillingServiceImpl.java</file>
+            <file>file:/D:/MiniSmartMeter/src/com/smartmeter/service/impl/AdminServiceImpl.java</file>
+            <file>file:/D:/MiniSmartMeter/src/com/smartmeter/service/impl/MeterReadingServiceImpl.java</file>
+            <file>file:/D:/MiniSmartMeter/src/com/smartmeter/patterns/observer/LogObserver.java</file>
+            <file>file:/D:/MiniSmartMeter/src/com/smartmeter/dao/impl/MeterReadingDAOImpl.java</file>
+            <file>file:/D:/MiniSmartMeter/src/com/smartmeter/controller/UserController.java</file>
         </group>
     </open-files>
 </project-private>

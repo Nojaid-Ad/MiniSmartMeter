@@ -1,7 +1,0 @@
-===== Smart Meter Bill =====
-User       : asdfasdf
-Bill ID    : 13
-Consumption: 10.0 kWh
-Amount     : 1.0 LYD
-Status     : PAID
-============================

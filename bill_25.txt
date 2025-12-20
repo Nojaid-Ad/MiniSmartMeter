@@ -1,0 +1,23 @@
+=========================================
+      ELECTRICITY BILL STATEMENT     
+=========================================
+      Bill Date & Time : 2025-12-20 22:00:49
+
+
+      User Name    : s
+      Bill Number      : 25
+
+
+      Meter Consumption Details
+
+
+      Total Usage      : 89.0 kWh
+      Total Amount     : 8.9 LYD
+
+
+      Payment Status   : PAID
+
+
+      System Generated Electricity Bill Successfully.
+      Please keep this bill for your records.
+=========================================
