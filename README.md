@@ -14,8 +14,11 @@ The main focus of the project is to demonstrate the **practical application of s
 
 ---
 ## Default admin:
-- username: admin
-- password: admin123
+```
+
+username: admin
+password: admin123
+```
 ## REQUIREMENTS
 - Java JDK 8 or higher  
 - Any Java IDE (NetBeans recommended)  
