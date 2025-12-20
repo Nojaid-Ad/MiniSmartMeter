@@ -11,7 +11,9 @@
 This project is a Java Console application developed as part of the **Software Design Patterns** course.  
 The system simulates a simplified electricity meter reading and billing environment where users can submit meter readings, generate bills, make payments, recharge balances, and submit service reports.  
 The main focus of the project is to demonstrate the **practical application of software design patterns** in a small-scale real-world system.
-
+Default admin:
+username: admin
+password: admin123
 ---
 
 ## REQUIREMENTS
