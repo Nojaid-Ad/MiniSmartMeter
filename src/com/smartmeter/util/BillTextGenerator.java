@@ -27,7 +27,7 @@ public class BillTextGenerator {
             writer.write("      Total Amount     : " + bill.getAmount() + " LYD\n");
             writer.write("\n\n");
             writer.write("      Payment Status   : PAID\n");
-            writer.write("(\"=========================================\\\n");
+            writer.write("=========================================\n");
             writer.write("      System Generated Electricity Bill Successfully.\n");
             writer.write("      Please keep this bill for your records.\n");
             writer.write("=========================================\n");
