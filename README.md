@@ -29,7 +29,7 @@ The main focus of the project is to demonstrate the **practical application of s
    - Open **phpMyAdmin**.
    - Import the provided SQL file:
      - Open `schema.sql`
-     - Import it into the created database.
+     - Import it.
 
 2. **Configure Database Connection**
    - Open the project in your Java IDE.
