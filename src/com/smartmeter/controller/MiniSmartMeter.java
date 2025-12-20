@@ -1,6 +1,5 @@
 package com.smartmeter.controller;
 
-
 import com.smartmeter.controller.AdminController;
 import com.smartmeter.controller.UserController;
 import com.smartmeter.patterns.observer.LogObserver;
