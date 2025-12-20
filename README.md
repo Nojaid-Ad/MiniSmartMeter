@@ -206,11 +206,11 @@ MiniSmartMeter/
 ---
 
 **Course:** Software Design Patterns (ITSE424)  
-**Faculty:** Faculty of Information Technology – Sabratha University  
+**Faculty:** Faculty of Information Technology Sowftware Eniggering Department – Sabratha University  
 **Semester:** Fall 2025  
 **Submitted By:**  
 - Nojaid Abdullah Issa Aummara  
 - Ayoub Ahfeeth Aboulqasim Abu Isnaynah  
 
 **Supervised By:** Dr. Mai Muftah Elbaabaa  
-**Date:** December 2025
+**Date:** 20 Dec 2025
