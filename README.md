@@ -13,12 +13,7 @@ The system simulates a simplified electricity meter reading and billing environm
 The main focus of the project is to demonstrate the **practical application of software design patterns** in a small-scale real-world system.
 
 ---
-## Default admin:
-```
 
-username: admin
-password: admin123
-```
 ## REQUIREMENTS
 - Java JDK 8 or higher  
 - Any Java IDE (NetBeans recommended)  
@@ -48,7 +43,12 @@ password: admin123
    - Run the `MiniSmartMeter.java` file.
    - The console menu will appear.
    - Select your role (User or Admin) and follow the instructions.
+  - Default admin:
+  ```
 
+username: admin
+password: admin123
+```
 ---
 
 ## USER ROLES
