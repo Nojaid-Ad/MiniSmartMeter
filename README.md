@@ -45,7 +45,6 @@ The main focus of the project is to demonstrate the **practical application of s
    - Select your role (User or Admin) and follow the instructions.
   - Default admin:
   ```
-
 username: admin
 password: admin123
 ```
